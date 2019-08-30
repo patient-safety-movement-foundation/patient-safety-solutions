@@ -15,6 +15,28 @@ function Section({ section }) {
     </div>
   );
 }
+
+function Title({ challenge, index, posts }) {
+  return (
+    <div className="sticky-title">
+      <a href={`#${challenge.number}`}>
+        <h1 id={challenge.number} className="challenge-title title">
+          {challenge.number}. {challenge.title.rendered}
+        </h1>
+      </a>
+      <div className="nav">
+        {posts[index - 1] ? (
+          <a href={`#${posts[index - 1].number}`}>prev</a>
+        ) : null}
+        {posts[index + 1] ? (
+          <React.Fragment>
+            &nbsp;<a href={`#${posts[index + 1].number}`}>next</a>
+          </React.Fragment>
+        ) : null}
+      </div>
+    </div>
+  );
+}
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -41,6 +63,7 @@ class App extends React.Component {
           const postNumber = challenge.acf.post_number
             .replace(/\s+/g, " ")
             .split(" ")[1];
+          challenge.number = postNumber;
           if (
             // We're iterating over a top level challenge
             isFinite(postNumber)
@@ -129,30 +152,19 @@ class App extends React.Component {
           })}
         </ul>
         <hr />
-        {this.state.challenges.map(challenge => {
+        {this.state.posts.map((challenge, index) => {
           return (
             <div key={challenge.number}>
-              <h1 id={challenge.number} className="challenge-title title">
-                {challenge.number}. {challenge.title}
-              </h1>
-              {challenge.sections.map((section, index) => {
-                return <Section key={index} section={section} />;
-              })}
-              {challenge.subChallenges.map(subChallenge => {
-                return (
-                  <div key={subChallenge.number}>
-                    <h2
-                      id={subChallenge.number}
-                      className="challenge-title title"
-                    >
-                      {subChallenge.number}. {subChallenge.title}
-                    </h2>
-                    {subChallenge.sections.map((section, index) => {
-                      return <Section key={index} section={section} />;
-                    })}
-                  </div>
-                );
-              })}
+              <Title
+                challenge={challenge}
+                index={index}
+                posts={this.state.posts}
+              />
+              {challenge.acf.challenge_protected_sections.map(
+                (section, index) => {
+                  return <Section key={index} section={section} />;
+                }
+              )}
               <hr />
             </div>
           );
