@@ -1,5 +1,6 @@
 import React from "react";
 import axios from "axios"; // http-client
+import $ from "jquery";
 
 function Section({ section }) {
   return (
@@ -60,14 +61,44 @@ class App extends React.Component {
             });
           }
         });
-        this.setState(
-          {
-            posts: allSortedChallenges,
-            challenges
-          },
-          () => console.log(this.state)
-        );
+        this.setState({
+          posts: allSortedChallenges,
+          challenges
+        });
       });
+  }
+
+  componentDidUpdate() {
+    $("*").removeAttr("style");
+
+    $(document).ready(function() {
+      $("table").each(function() {
+        const table = $(this);
+        const tableRow = table.find("tr");
+        table.find("td").each(function() {
+          const tdIndex = $(this).index();
+          let thText;
+          if (
+            $(tableRow)
+              .find("th")
+              .eq(tdIndex)
+              .attr("data-label")
+          ) {
+            thText = $(tableRow)
+              .find("th")
+              .eq(tdIndex)
+              .data("label");
+          } else {
+            thText = $(tableRow)
+              .find("td")
+              .eq(tdIndex)
+              .text()
+              .trim();
+          }
+          $(this).attr("data-label", thText);
+        });
+      });
+    });
   }
 
   render() {
@@ -83,7 +114,7 @@ class App extends React.Component {
                 <ul>
                   {challenge.subChallenges.map(subChallenge => {
                     return (
-                      <li>
+                      <li key={subChallenge.number}>
                         <a href={`#${subChallenge.number}`}>
                           {subChallenge.number}. {subChallenge.title}
                         </a>
@@ -102,21 +133,17 @@ class App extends React.Component {
               <h1 id={challenge.number}>
                 {challenge.number}. {challenge.title}
               </h1>
-              {challenge.sections.map(section => {
-                return (
-                  <div>
-                    <Section section={section} />
-                  </div>
-                );
+              {challenge.sections.map((section, index) => {
+                return <Section key={index} section={section} />;
               })}
               {challenge.subChallenges.map(subChallenge => {
                 return (
-                  <div>
+                  <div key={subChallenge.number}>
                     <h2 id={subChallenge.number}>
                       {subChallenge.number}. {subChallenge.title}
                     </h2>
-                    {subChallenge.sections.map(section => {
-                      return <Section section={section} />;
+                    {subChallenge.sections.map((section, index) => {
+                      return <Section key={index} section={section} />;
                     })}
                   </div>
                 );
