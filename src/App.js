@@ -6,7 +6,7 @@ import { ReactComponent as Arrow } from "./arrow.svg";
 function Section({ section }) {
   return (
     <div>
-      <h3>{section.section_title}</h3>
+      <h3 className="section-title">{section.section_title}</h3>
       <div
         dangerouslySetInnerHTML={{
           __html: section.section_content
@@ -132,7 +132,7 @@ class App extends React.Component {
         {this.state.challenges.map(challenge => {
           return (
             <div key={challenge.number}>
-              <h1 id={challenge.number}>
+              <h1 id={challenge.number} className="challenge-title title">
                 {challenge.number}. {challenge.title}
               </h1>
               {challenge.sections.map((section, index) => {
@@ -141,7 +141,10 @@ class App extends React.Component {
               {challenge.subChallenges.map(subChallenge => {
                 return (
                   <div key={subChallenge.number}>
-                    <h2 id={subChallenge.number}>
+                    <h2
+                      id={subChallenge.number}
+                      className="challenge-title title"
+                    >
                       {subChallenge.number}. {subChallenge.title}
                     </h2>
                     {subChallenge.sections.map((section, index) => {

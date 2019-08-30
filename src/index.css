@@ -29,6 +29,18 @@ iframe {
   max-width: 100%;
 }
 
+.challenge-title {
+  position: sticky;
+  top: 0;
+  background: #fff;
+  border-bottom: 1px solid;
+  padding: 1rem 0;
+}
+
+.title {
+  color: #007bff;
+}
+
 #back-to-top {
   background: #fff;
   position: fixed;
@@ -46,6 +58,14 @@ iframe {
 
 #back-to-top path {
   fill: #adb5bd;
+}
+
+h3.section-title {
+  text-align: center;
+  display: block;
+  font-family: monospace;
+  padding: 1rem;
+  font-size: 2rem;
 }
 
 @import url("https://fonts.googleapis.com/css?family=Montserrat:500,700");
