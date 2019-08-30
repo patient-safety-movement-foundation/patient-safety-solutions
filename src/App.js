@@ -129,46 +129,49 @@ class App extends React.Component {
   render() {
     return (
       <div>
-        <ul>
-          {this.state.challenges.map(challenge => {
+        <h1 id="hero">Actionable Patient Safety Solutions (APSS)</h1>
+        <div className="column">
+          <ul>
+            {this.state.challenges.map(challenge => {
+              return (
+                <li key={challenge.number}>
+                  <a href={`#${challenge.number}`}>
+                    {challenge.number}. {challenge.title}
+                  </a>
+                  <ul>
+                    {challenge.subChallenges.map(subChallenge => {
+                      return (
+                        <li key={subChallenge.number}>
+                          <a href={`#${subChallenge.number}`}>
+                            {subChallenge.number}. {subChallenge.title}
+                          </a>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </li>
+              );
+            })}
+          </ul>
+          <hr />
+          {this.state.posts.map((challenge, index) => {
             return (
-              <li key={challenge.number}>
-                <a href={`#${challenge.number}`}>
-                  {challenge.number}. {challenge.title}
-                </a>
-                <ul>
-                  {challenge.subChallenges.map(subChallenge => {
-                    return (
-                      <li key={subChallenge.number}>
-                        <a href={`#${subChallenge.number}`}>
-                          {subChallenge.number}. {subChallenge.title}
-                        </a>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </li>
+              <div key={challenge.number}>
+                <Title
+                  challenge={challenge}
+                  index={index}
+                  posts={this.state.posts}
+                />
+                {challenge.acf.challenge_protected_sections.map(
+                  (section, index) => {
+                    return <Section key={index} section={section} />;
+                  }
+                )}
+                <hr />
+              </div>
             );
           })}
-        </ul>
-        <hr />
-        {this.state.posts.map((challenge, index) => {
-          return (
-            <div key={challenge.number}>
-              <Title
-                challenge={challenge}
-                index={index}
-                posts={this.state.posts}
-              />
-              {challenge.acf.challenge_protected_sections.map(
-                (section, index) => {
-                  return <Section key={index} section={section} />;
-                }
-              )}
-              <hr />
-            </div>
-          );
-        })}
+        </div>
         <a href="##" id="back-to-top">
           <Arrow />
         </a>
