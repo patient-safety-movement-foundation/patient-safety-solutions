@@ -1,3 +1,8 @@
+#root {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
 p,
 li {
   word-break: break-word;
