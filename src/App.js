@@ -1,6 +1,7 @@
 import React from "react";
 import axios from "axios"; // http-client
 import $ from "jquery";
+import { ReactComponent as Arrow } from "./arrow.svg";
 
 function Section({ section }) {
   return (
@@ -104,7 +105,7 @@ class App extends React.Component {
 
   render() {
     return (
-      <div id="#">
+      <div>
         <ul>
           {this.state.challenges.map(challenge => {
             return (
@@ -154,7 +155,7 @@ class App extends React.Component {
           );
         })}
         <a href="##" id="back-to-top">
-          Back to top
+          <Arrow />
         </a>
       </div>
     );
