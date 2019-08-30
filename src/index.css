@@ -49,6 +49,7 @@ iframe {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
+  z-index: 1;
 }
 
 .title {
