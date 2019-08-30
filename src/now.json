@@ -1,3 +1,4 @@
 {
-  "alias": ["apss"]
+  "alias": ["apss"],
+  "scope": "patient-safety-movement"
 }
