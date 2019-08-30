@@ -153,6 +153,9 @@ class App extends React.Component {
             </div>
           );
         })}
+        <a href="#" id="back-to-top">
+          Back to top
+        </a>
       </div>
     );
   }
