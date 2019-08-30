@@ -71,6 +71,7 @@ class App extends React.Component {
   componentDidUpdate() {
     $("*").removeAttr("style");
 
+    // https://j.eremy.net/responsive-table/
     $(document).ready(function() {
       $("table").each(function() {
         const table = $(this);
