@@ -104,7 +104,7 @@ class App extends React.Component {
 
   render() {
     return (
-      <div>
+      <div id="#">
         <ul>
           {this.state.challenges.map(challenge => {
             return (
@@ -153,7 +153,7 @@ class App extends React.Component {
             </div>
           );
         })}
-        <a href="#" id="back-to-top">
+        <a href="##" id="back-to-top">
           Back to top
         </a>
       </div>
