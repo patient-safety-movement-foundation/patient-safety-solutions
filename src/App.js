@@ -114,6 +114,10 @@ const ButtonToTop = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
+  border: 1px solid #000;
+  width: 50px;
+  height: 50px;
+  padding: 0;
 `;
 
 const BackButton = styled.button`
