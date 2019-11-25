@@ -341,7 +341,11 @@ class App extends React.Component {
             {this.state.posts[
               this.state.challenge
             ].acf.challenge_protected_sections.map((section, index) => {
-              return <Section key={index} section={section} />;
+              return (
+                <div className="single-challenge">
+                  <Section key={index} section={section} />
+                </div>
+              );
             })}
             <ButtonToTop
               onClick={() => {
