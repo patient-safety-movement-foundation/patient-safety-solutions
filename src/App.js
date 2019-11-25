@@ -1,42 +1,144 @@
 import React from "react";
 import axios from "axios"; // http-client
 import $ from "jquery";
+import styled from "styled-components";
 import { ReactComponent as Arrow } from "./arrow.svg";
+import { ReactComponent as ArrowLeft } from "./arrow-left.svg";
+
+const Header = styled.header`
+  background: #0062ab;
+  color: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  border-top: env(safe-area-inset-top, 0) solid #0062ab;
+  height: 4rem;
+  max-height: 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  text-align: left;
+  padding: 1rem 0;
+`;
+
+const Title = styled.span`
+  text-align: center;
+  display: block;
+  width: 100%;
+`;
+
+const H3 = styled.h3`
+  color: #000;
+  font-size: 1.125rem;
+  padding: 0.5rem;
+  border-bottom: 1px solid #ccc;
+  border-top: 1px solid #ccc;
+  z-index: 1;
+  background: #fff;
+`;
+
+const Button = styled.button`
+  background: #0062ab;
+  border: none;
+  color: #fff;
+  width: 100%;
+  min-height: 2rem;
+  outline: none;
+`;
+
+const Main = styled.main`
+  padding: 1rem;
+  text-align: left;
+`;
+
+const Article = styled.article`
+  height: calc(100vh - 4rem);
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+`;
+
+const Footer = styled.footer`
+  padding: 1rem;
+  padding-bottom: calc(1rem + env(safe-area-inset-bottom, 0));
+`;
+
+const Ul = styled.ul`
+  padding: 0;
+  margin: 0;
+`;
+
+const Li = styled.li`
+  border-bottom: 1px solid #ccc;
+  span {
+    padding: 1rem;
+    display: block;
+    color: #aaa;
+  }
+
+  button {
+    overflow: hidden;
+    padding: 1rem;
+    display: block;
+    text-align: left;
+    width: 100%;
+    background: none;
+    border: none;
+
+    span {
+      padding: 0;
+      color: #73bb44;
+    }
+  }
+`;
+
+const ChallengeTOC = styled.ul`
+  padding: 0;
+  margin: 0;
+  a {
+    color: #73bb44;
+    border-bottom: 1px solid #ccc;
+    padding: 0.5rem;
+    display: block;
+  }
+`;
+
+const ButtonToTop = styled.button`
+  background: #fff;
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  border-radius: 50%;
+  height: 3rem;
+  width: 3rem;
+  outline: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const BackButton = styled.button`
+  background: transparent;
+  border: none;
+  path {
+    fill: #fff;
+  }
+`;
 
 function Section({ section }) {
   return (
-    <div>
-      <h3 className="section-title">{section.section_title}</h3>
-      <div
+    <React.Fragment>
+      <H3 id={section.section_title} className="section-title">
+        <a href={`#${section.section_title}`}>{section.section_title}</a>
+      </H3>
+      <Main
         dangerouslySetInnerHTML={{
           __html: section.section_content
         }}
       />
-    </div>
+    </React.Fragment>
   );
 }
 
-function Title({ challenge, index, posts }) {
-  return (
-    <div className="sticky-title">
-      <a href={`#${challenge.number}`}>
-        <h1 id={challenge.number} className="challenge-title title">
-          {challenge.number}. {challenge.title.rendered}
-        </h1>
-      </a>
-      <div className="nav">
-        {posts[index - 1] ? (
-          <a href={`#${posts[index - 1].number}`}>prev</a>
-        ) : null}
-        {posts[index + 1] ? (
-          <React.Fragment>
-            &nbsp;<a href={`#${posts[index + 1].number}`}>next</a>
-          </React.Fragment>
-        ) : null}
-      </div>
-    </div>
-  );
-}
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -45,8 +147,16 @@ class App extends React.Component {
 
   componentDidMount() {
     axios
+      .get("https://patientsafetymovement.org/wp-json/wp/v2/pages/118137")
+      .then(res => {
+        this.setState({
+          homePage: res.data.content.rendered
+        });
+      });
+
+    axios
       .get(
-        "https://patientsafetymovement.org/wp-json/wp/v2/challenge?per_page=100"
+        `https://patientsafetymovement.org/wp-json/wp/v2/challenge?per_page=100&date=${Date.now()}`
       )
       .then(response => {
         const allSortedChallenges = response.data.sort((a, b) =>
@@ -126,12 +236,123 @@ class App extends React.Component {
     });
   }
 
+  closeHomePage = () => {
+    this.setState({
+      homePage: false,
+      isTableOfContentsVisible: true
+    });
+  };
+
+  showChallenge = challenge => {
+    this.setState({
+      challenge: challenge.index,
+      isTableOfContentsVisible: false
+    });
+  };
+
+  closeChallenge = challenge => {
+    this.setState({
+      challenge: undefined,
+      isTableOfContentsVisible: true
+    });
+  };
+
+  title = () => {
+    return (
+      <React.Fragment>
+        <BackButton onClick={this.closeChallenge}>
+          <ArrowLeft />
+        </BackButton>
+        {this.state.posts[this.state.challenge].number}.{" "}
+        {this.state.posts[this.state.challenge].title.rendered}
+      </React.Fragment>
+    );
+  };
+
   render() {
     return (
-      <div>
-        <h1 id="hero">Actionable Patient Safety Solutions (APSS)</h1>
-        <div className="column">
-          <ul>
+      <React.Fragment>
+        <Header>
+          {Number.isInteger(this.state.challenge) ? (
+            this.title()
+          ) : (
+            <Title>Actionable Patient Safety Solutions</Title>
+          )}
+        </Header>
+        {this.state.homePage ? (
+          <React.Fragment>
+            <main dangerouslySetInnerHTML={{ __html: this.state.homePage }} />
+            <Footer>
+              <Button type="button" onClick={this.closeHomePage}>
+                Continue
+              </Button>
+            </Footer>
+          </React.Fragment>
+        ) : null}
+        {this.state.isTableOfContentsVisible ? (
+          <Ul>
+            {this.state.posts.map((challenge, index) => {
+              return (
+                <Li key={challenge.number}>
+                  {challenge.acf.challenge_protected_sections.length === 1 ? (
+                    <span>
+                      {challenge.number}. {challenge.title.rendered}
+                    </span>
+                  ) : (
+                    <button
+                      onClick={() =>
+                        this.showChallenge({
+                          challenge: challenge.number,
+                          index
+                        })
+                      }
+                    >
+                      <span>
+                        {challenge.number}. {challenge.title.rendered}
+                      </span>
+                    </button>
+                  )}
+                </Li>
+              );
+            })}
+          </Ul>
+        ) : null}
+        {Number.isInteger(this.state.challenge) ? (
+          <Article
+            id="top"
+            ref={c => {
+              this.article = c;
+            }}
+          >
+            <ChallengeTOC>
+              {this.state.posts[
+                this.state.challenge
+              ].acf.challenge_protected_sections.map(section => {
+                return (
+                  <li key={section.section_title}>
+                    <a href={`#${section.section_title}`}>
+                      {section.section_title}
+                    </a>
+                  </li>
+                );
+              })}
+            </ChallengeTOC>
+
+            {this.state.posts[
+              this.state.challenge
+            ].acf.challenge_protected_sections.map((section, index) => {
+              return <Section key={index} section={section} />;
+            })}
+            <ButtonToTop
+              onClick={() => {
+                this.article.scrollTo(0, 0);
+              }}
+            >
+              <Arrow />
+            </ButtonToTop>
+          </Article>
+        ) : null}
+        {/* <ul>
             {this.state.challenges.map(challenge => {
               return (
                 <li key={challenge.number}>
@@ -171,11 +392,8 @@ class App extends React.Component {
               </div>
             );
           })}
-        </div>
-        <a href="##" id="back-to-top">
-          <Arrow />
-        </a>
-      </div>
+        */}
+      </React.Fragment>
     );
   }
 }
