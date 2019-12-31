@@ -158,52 +158,50 @@ class App extends React.Component {
         });
       });
 
-    axios
-      .get(
-        `https://patientsafetymovement.org/wp-json/wp/v2/challenge?per_page=100&date=${Date.now()}`
-      )
-      .then(response => {
-        const allSortedChallenges = response.data.sort((a, b) =>
-          a.acf.post_number
-            .replace(/\s+/g, "")
-            .localeCompare(b.acf.post_number.replace(/\s+/g, ""), undefined, {
-              numeric: true
-            })
-        );
+    axios.get(`/api/challenges`).then(response => {
+      console.log(response);
+      console.log(response.data);
+      const allSortedChallenges = response.data.sort((a, b) =>
+        a.acf.post_number
+          .replace(/\s+/g, "")
+          .localeCompare(b.acf.post_number.replace(/\s+/g, ""), undefined, {
+            numeric: true
+          })
+      );
 
-        const challenges = [];
-        let lastChallengeCursor;
-        allSortedChallenges.forEach(challenge => {
-          const postNumber = challenge.acf.post_number
-            .replace(/\s+/g, " ")
-            .split(" ")[1];
-          challenge.number = postNumber;
-          if (
-            // We're iterating over a top level challenge
-            isFinite(postNumber)
-          ) {
-            const challengeNumber = parseInt(postNumber);
-            lastChallengeCursor = challengeNumber - 1;
-            challenges.push({
-              number: challengeNumber,
-              title: challenge.title.rendered,
-              subChallenges: [],
-              sections: challenge.acf.challenge_protected_sections
-            });
-          } else {
-            // We're iterating over a sub challenge
-            challenges[lastChallengeCursor].subChallenges.push({
-              title: challenge.title.rendered,
-              number: postNumber,
-              sections: challenge.acf.challenge_protected_sections
-            });
-          }
-        });
-        this.setState({
-          posts: allSortedChallenges,
-          challenges
-        });
+      const challenges = [];
+      let lastChallengeCursor;
+      allSortedChallenges.forEach(challenge => {
+        const postNumber = challenge.acf.post_number
+          .replace(/\s+/g, " ")
+          .split(" ")[1];
+        challenge.number = postNumber;
+        if (
+          // We're iterating over a top level challenge
+          isFinite(postNumber)
+        ) {
+          const challengeNumber = parseInt(postNumber);
+          lastChallengeCursor = challengeNumber - 1;
+          challenges.push({
+            number: challengeNumber,
+            title: challenge.title.rendered,
+            subChallenges: [],
+            sections: challenge.acf.challenge_protected_sections
+          });
+        } else {
+          // We're iterating over a sub challenge
+          challenges[lastChallengeCursor].subChallenges.push({
+            title: challenge.title.rendered,
+            number: postNumber,
+            sections: challenge.acf.challenge_protected_sections
+          });
+        }
       });
+      this.setState({
+        posts: allSortedChallenges,
+        challenges
+      });
+    });
   }
 
   componentDidUpdate() {
