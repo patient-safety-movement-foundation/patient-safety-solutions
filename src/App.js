@@ -162,11 +162,18 @@ class App extends React.Component {
         });
       });
 
+    this.loadChallenges();
+  }
+
+  loadChallenges() {
     axios
       .get(
         `https://patientsafetymovement.org/wp-json/wp/v2/challenge?per_page=100&date=${Date.now()}`
       )
       .then(response => {
+        if (typeof response.data === "string") {
+          return this.loadChallenges();
+        }
         const allSortedChallenges = response.data.sort((a, b) =>
           a.acf.post_number
             .replace(/\s+/g, "")
