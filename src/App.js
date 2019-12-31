@@ -44,6 +44,10 @@ const Button = styled.button`
   width: 100%;
   min-height: 2rem;
   outline: none;
+
+  &:disabled {
+    opacity: 0.5;
+  }
 `;
 
 const Main = styled.main`
@@ -146,7 +150,7 @@ function Section({ section }) {
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { challenges: [], posts: [] };
+    this.state = { challenges: [], posts: [], isLoading: true };
   }
 
   componentDidMount() {
@@ -201,7 +205,8 @@ class App extends React.Component {
         });
         this.setState({
           posts: allSortedChallenges,
-          challenges
+          challenges,
+          isLoading: false
         });
       });
   }
@@ -287,8 +292,12 @@ class App extends React.Component {
           <React.Fragment>
             <main dangerouslySetInnerHTML={{ __html: this.state.homePage }} />
             <Footer>
-              <Button type="button" onClick={this.closeHomePage}>
-                Continue
+              <Button
+                type="button"
+                onClick={this.closeHomePage}
+                disabled={this.state.isLoading}
+              >
+                {this.state.isLoading ? "Loading" : "Continue"}
               </Button>
             </Footer>
           </React.Fragment>
