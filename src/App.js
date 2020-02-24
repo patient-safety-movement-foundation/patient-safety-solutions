@@ -349,7 +349,7 @@ class App extends React.Component {
                 this.state.challenge
               ].acf.challenge_protected_sections.map(section => {
                 // This is backwards for 2020, just pretend 'No' means 'Yes'
-                return section.for_upcoming_summit === 'No' ? (
+                return section.for_upcoming_summit === "No" ? (
                   <li key={section.section_title}>
                     <a href={`#${section.section_title}`}>
                       {section.section_title}
@@ -362,11 +362,12 @@ class App extends React.Component {
             {this.state.posts[
               this.state.challenge
             ].acf.challenge_protected_sections.map((section, index) => {
-              return (
+              // This is backwards for 2020, just pretend 'No' means 'Yes'
+              return section.for_upcoming_summit === "No" ? (
                 <div className="single-challenge">
                   <Section key={index} section={section} />
                 </div>
-              );
+              ) : null;
             })}
             <ButtonToTop
               onClick={() => {
