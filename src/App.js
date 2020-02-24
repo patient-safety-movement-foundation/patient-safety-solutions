@@ -348,13 +348,14 @@ class App extends React.Component {
               {this.state.posts[
                 this.state.challenge
               ].acf.challenge_protected_sections.map(section => {
-                return (
+                // This is backwards for 2020, just pretend 'No' means 'Yes'
+                return section.for_upcoming_summit === 'No' ? (
                   <li key={section.section_title}>
                     <a href={`#${section.section_title}`}>
                       {section.section_title}
                     </a>
                   </li>
-                );
+                ) : null;
               })}
             </ChallengeTOC>
 
